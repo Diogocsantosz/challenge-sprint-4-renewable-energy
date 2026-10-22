@@ -1,34 +1,34 @@
 # Roteiro de apresentação — vídeo não listado
 
-**Duração sugerida:** 5–7 minutos. **Formato:** compartilhamento de tela com o código e resultados gerados. As métricas abaixo foram preenchidas a partir da execução do projeto.
+**Duração sugerida:** 5–7 minutos. Usem este roteiro como guia, não como texto para decorar. Cada integrante pode explicar a parte que entende melhor. As métricas abaixo vêm da execução do projeto.
 
 ## 1. Abertura (20–30 s)
 
-“Olá! Nós somos Rafael Laprega Gontijo Magalhaes (RM 561975), Gustavo Torres de Oliveira (RM 572952), Lucas Furquim Lima (RM 568690) e Diogo Chiaradia Santos (RM 570246). Neste vídeo apresentamos o Challenge Sprint 4. O objetivo é classificar `Energy_Class` usando o dataset Renewable Energy Production Dataset de 2010 a 2020 e comparar dois tamanhos de conjunto de teste com Regressão Logística.”
+“Oi! Somos Rafael Laprega Gontijo Magalhaes (RM 561975), Gustavo Torres de Oliveira (RM 572952), Lucas Furquim Lima (RM 568690) e Diogo Chiaradia Santos (RM 570246). Neste trabalho usamos dados de energia renovável para prever a classe `Energy_Class`. Também comparamos a Regressão Logística em dois cenários de treino e teste.”
 
 ## 2. Dados e preparação (45–60 s)
 
-Mostrar o CSV na pasta `data/` e a leitura/inspeção no notebook. “O código verifica dimensões, tipos, valores ausentes e distribuição das classes. A variável-alvo é codificada com `LabelEncoder`; o mapeamento fica impresso para rastreabilidade. As colunas categóricas dos preditores são tratadas com one-hot encoding no pipeline, não como números ordinais.”
+Mostrar o CSV em `data/` e a leitura dos dados. “A base tem 1.000 linhas. O código verifica os tipos das colunas, valores ausentes e quantas linhas existem em cada classe. Transformamos `Energy_Class` em números para treinar o modelo. As outras colunas categóricas são convertidas em indicadores pelo pipeline.”
 
 ## 3. Correlação e decisão de features (60 s)
 
-Mostrar o heatmap e as correlações altas impressas. “A matriz inclui todos os preditores transformados e `Energy_Class` codificada. A codificação de uma classe nominal não tem ordem semântica, então correlação é apenas exploratória. Mantive todas as features como baseline e só consideraria remover variáveis após verificar redundância, vazamento, identificadores e conhecimento do domínio.”
+Mostrar o heatmap. “Não apareceu nenhum par de atributos com correlação absoluta de 0,85 ou mais. A maior correlação com o alvo foi cerca de 0,167. Como os números usados para codificar as classes não significam que uma classe seja maior ou menor que outra, usamos essa correlação apenas como referência. Por isso, mantivemos todos os preditores.”
 
 ## 4. Modelo linear (45–60 s)
 
-Mostrar a função `build_model`. “A Regressão Logística calcula escores lineares, `wᵀx + b`, e os transforma em probabilidades. Em multiclasses, a fronteira entre duas classes satisfaz `(wᵢ-wⱼ)ᵀx + (bᵢ-bⱼ)=0`, um hiperplano no espaço das features. Imputação, padronização e codificação são ajustadas dentro do pipeline apenas no treino.”
+Mostrar a função `build_model`. “Escolhemos Regressão Logística. Apesar do nome, usamos ela para classificação. O modelo calcula um escore linear para cada classe e escolhe a classe com maior probabilidade. Por isso, a fronteira entre classes é linear no espaço dos atributos. O pipeline também prepara os dados usando apenas o conjunto de treino.”
 
 ## 5. Cenários e resultados (90–120 s)
 
-Mostrar as duas matrizes de confusão e `metrics_comparison.csv`. “O primeiro cenário usa 60% para treino e 40% para teste; o segundo, 85% para treino e 15% para teste. Ambos mantêm `random_state=42` e usam estratificação quando viável.”
+Mostrar as duas matrizes de confusão e `metrics_comparison.csv`. “No primeiro cenário, usamos 60% dos dados para treino e 40% para teste. No segundo, usamos 85% para treino e 15% para teste. Mantivemos a mesma semente para tornar a divisão reproduzível.”
 
-“No cenário 60/40, obtivemos acurácia de **0,7200**, precisão ponderada de **0,7083** e recall ponderado de **0,7200**. No cenário 85/15, os valores foram **0,7933**, **0,7927** e **0,7933**. No relatório por classe, o recall mais baixo no cenário 60/40 foi para Low (**0,4507**); no cenário 85/15, High teve recall **0,9315**, enquanto Low e Medium ficaram em **0,6667** e **0,6600**. As matrizes de confusão mostram em quais classes ocorrem esses erros.”
+“No cenário 60/40, a acurácia foi **0,7200**, a precisão ponderada **0,7083** e o recall ponderado **0,7200**. No cenário 85/15, foram **0,7933**, **0,7927** e **0,7933**. A baseline, que sempre prevê a classe mais frequente, ficou perto de **0,487** nos dois casos. No cenário 60/40, o recall de Low foi **0,4507**; no 85/15, os recalls de Low e Medium foram **0,6667** e **0,6600**. As matrizes ajudam a ver onde aconteceram as confusões.”
 
-“Não concluo adequação apenas pela acurácia: observo desempenho por classe, distribuição, erros relevantes e baseline. O conjunto de teste maior estima métricas com mais observações, mas deixa menos dados para treino. O menor aumenta o treino, porém torna a avaliação mais sensível à amostra. As diferenças devem ser interpretadas com cautela.”
+“O modelo foi melhor que a baseline, mas ainda confunde algumas classes, principalmente Low e Medium. Com 40% de teste temos mais exemplos para avaliar, mas menos dados para treinar. Com 15% de teste treinamos com mais dados, mas a avaliação fica mais dependente de uma amostra menor. Então não dá para dizer que um cenário é definitivamente melhor só olhando esses números.”
 
 ## 6. Fechamento (20–30 s)
 
-“Os resultados são reproduzíveis e os gráficos, métricas e relatórios ficam na pasta `outputs/`. Para uma avaliação mais estável, o próximo passo seria validação cruzada estratificada e uma análise mais aprofundada dos erros. Obrigado!”
+“Os gráficos e os resultados que mostramos ficam na pasta `outputs/`. Como próximo passo, poderíamos testar o modelo com validação cruzada para ter uma comparação mais estável. Obrigado!”
 
 ## Checklist antes de gravar
 
