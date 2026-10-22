@@ -1,6 +1,6 @@
-# CHALLENGE SPRINT 4 — Renewable Energy Production
+# Challenge Sprint 4 — Energia renovável
 
-Classificação supervisionada da variável `Energy_Class` usando **Regressão Logística** e o dataset *Renewable Energy Production Dataset (2010–2020)*, do Kaggle. O projeto calcula correlações, treina e compara dois cenários de holdout e exporta gráficos e métricas.
+Neste projeto usamos Regressão Logística para prever a classe de energia (`Energy_Class`) do dataset *Renewable Energy Production Dataset (2010–2020)*. Também analisamos as correlações e comparamos o modelo com duas divisões de treino e teste.
 
 ## Integrantes
 
@@ -9,94 +9,66 @@ Classificação supervisionada da variável `Energy_Class` usando **Regressão L
 - Lucas Furquim Lima — RM 568690
 - Diogo Chiaradia Santos — RM 570246
 
-> **Dados:** o CSV usado está em `data/renewable_energy_production_dataset.csv` e foi obtido do [Kaggle](https://www.kaggle.com/datasets/itsrohithere/renewable-energy-production-dataset-2010-2020). A página do dataset informa licença “Unknown”; confira os termos de uso antes de redistribuí-lo publicamente. A atividade exige que a base esteja no repositório.
+## Dados e arquivos
 
-## Estrutura
+O CSV usado está em `data/renewable_energy_production_dataset.csv`. Ele foi obtido no [Kaggle](https://www.kaggle.com/datasets/itsrohithere/renewable-energy-production-dataset-2010-2020). A página do Kaggle mostra a licença como “Unknown”; confira os termos de uso antes de redistribuir o arquivo publicamente. A atividade pede que a base esteja no repositório.
 
 ```text
-challenge-sprint-4/
-├── data/
-│   └── renewable_energy_production_dataset.csv
-├── notebooks/
-│   └── challenge_sprint_4.ipynb
-├── outputs/                                      # gerado na execução
-├── src/
-│   └── analysis.py
-├── requirements.txt
-└── README.md
+data/       dataset utilizado
+notebooks/  notebook da análise
+src/        código Python
+outputs/    gráficos, matrizes e métricas gerados pelo código
 ```
 
-## Métodos e justificativas
+## O que fizemos
 
-### Preparação e correlação
+Codificamos `Energy_Class` com `LabelEncoder`. Para montar a matriz de correlação, mantivemos as colunas numéricas e transformamos as categóricas em indicadores one-hot. A matriz inclui o alvo codificado.
 
-O alvo `Energy_Class` é transformado em códigos inteiros com `LabelEncoder`; o mapeamento aparece no console. Para a análise exploratória, colunas categóricas dos preditores são expandidas em indicadores one-hot, e os valores numéricos são preservados. O heatmap contém esses atributos numéricos e o alvo codificado. Atenção: Pearson sobre códigos categóricos nominais pode sugerir associação que depende da codificação, e a numeração das classes não expressa distância real entre elas. Para alvos multiclasse, as correlações com o rótulo devem ser vistas como triagem exploratória, não como medida definitiva de importância.
+Como as classes são categorias nominais, os números atribuídos pelo encoder não representam uma ordem ou distância entre elas. Por isso, usamos a correlação com `Energy_Class` apenas como uma referência inicial, não como prova de que uma variável deve ser removida.
 
-O baseline utiliza todos os preditores, exceto `Energy_Class`; remove apenas colunas totalmente vazias. A decisão é apropriada sem evidência empírica suficiente para descartar variáveis. Pares com `|r| >= 0,85` são reportados para inspeção: redundância, vazamento de informação, identificadores e relevância de domínio devem orientar seleção futura. Correlação baixa não implica falta de poder preditivo, pois relações não lineares ou interações podem existir. Com Regressão Logística, regularização ajuda a limitar coeficientes, mas não torna variáveis irrelevantes automaticamente.
+Nenhum par de atributos teve correlação absoluta igual ou superior a 0,85. Também não encontramos uma relação linear forte entre um preditor e o alvo: a maior correlação absoluta com o alvo foi cerca de 0,167, para `Efficiency_Ratio`. Com esses resultados, decidimos manter todos os preditores no modelo. Correlação, sozinha, não mostra se um atributo pode ajudar por meio de relações não lineares ou combinações com outros atributos.
 
-### Por que Regressão Logística é linear?
+Escolhemos Regressão Logística, um modelo linear. Para cada classe, ele calcula um escore da forma `wᵀx + b` e o transforma em uma probabilidade. A fronteira entre duas classes ocorre quando os escores são iguais; essa condição forma uma reta, um plano ou um hiperplano, dependendo do número de atributos. O código também usa imputação, padronização e one-hot encoding dentro do pipeline, ajustando essas etapas apenas com os dados de treino.
 
-Para cada classe `k`, o modelo calcula `z_k = w_k^T x + b_k`; a função logística/softmax transforma esses escores em probabilidades. A fronteira de decisão entre as classes `i` e `j` é definida por `z_i = z_j`, isto é, `(w_i - w_j)^T x + (b_i - b_j) = 0`. Essa equação descreve uma reta, plano ou hiperplano (conforme a dimensão dos atributos). A fronteira é linear no espaço das features transformadas. O pipeline usa imputação, padronização numérica e one-hot encoding para categóricas, todos ajustados exclusivamente no treino de cada cenário.
+## Resultados
 
-### Divisão e métricas
+Usamos `random_state=42` nos dois cenários e estratificamos as divisões quando possível.
 
-Ambos os cenários usam `random_state=42` e tentam manter a proporção de classes com estratificação:
-
-| Cenário | Treino | Teste |
-|---|---:|---:|
-| 1 | 60% | 40% |
-| 2 | 85% | 15% |
-
-Para problema multiclasse, precisão e recall `weighted` são exibidos como medidas globais, juntamente com as versões `macro` e o `classification_report` por classe. Isso evita ocultar classes minoritárias por trás da acurácia. A matriz de confusão usa os nomes originais das classes.
-
-#### Resultados obtidos
-
-| Cenário | N treino | N teste | Acurácia | Baseline majoritária | Precisão weighted | Recall weighted | Precisão macro | Recall macro |
+| Cenário | Treino | Teste | Acurácia | Baseline majoritária | Precisão weighted | Recall weighted | Precisão macro | Recall macro |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 60/40 | 600 | 400 | 0,7200 | 0,4875 | 0,7083 | 0,7200 | 0,6938 | 0,6439 |
-| 85/15 | 850 | 150 | 0,7933 | 0,4867 | 0,7927 | 0,7933 | 0,8000 | 0,7527 |
+| 1 | 60% (600) | 40% (400) | 0,7200 | 0,4875 | 0,7083 | 0,7200 | 0,6938 | 0,6439 |
+| 2 | 85% (850) | 15% (150) | 0,7933 | 0,4867 | 0,7927 | 0,7933 | 0,8000 | 0,7527 |
 
-O dataset contém 1.000 registros e as classes estão distribuídas em High (486), Medium (336) e Low (178). Nenhum par de atributos atingiu correlação absoluta de 0,85; portanto, não há evidência nessa análise de redundância linear forte que justifique remover features. A correlação de Pearson com `Energy_Class` codificada é fraca (maior valor absoluto: aproximadamente 0,167 para `Efficiency_Ratio`) e deve ser interpretada apenas como triagem, pois os números atribuídos às classes nominais não representam uma ordem real. Por isso, o modelo baseline utiliza todos os preditores.
+O dataset tem 1.000 registros: 486 da classe High, 336 de Medium e 178 de Low. Nos dois cenários, a acurácia foi maior que a baseline majoritária, que simplesmente prevê a classe mais frequente.
 
-Nos dois cenários, a acurácia supera a baseline majoritária (aproximadamente 0,487), indicando que o modelo aprendeu padrões além de sempre prever a classe mais frequente. O cenário 85/15 apresentou métricas maiores, mas sua avaliação usa apenas 150 registros e pode variar mais com a composição da amostra. Os recalls por classe mostram que o desempenho não é uniforme: no cenário 60/40, o recall foi 0,9436 para High, 0,4507 para Low e 0,5373 para Medium; no cenário 85/15, foi 0,9315, 0,6667 e 0,6600, respectivamente. Assim, o resultado é promissor como baseline, mas a adequação depende do custo dos erros, especialmente para as classes Low e Medium. A diferença entre os cenários não prova, por si só, que um seja superior; validação cruzada poderia fornecer uma comparação mais estável.
+O resultado não é igual para todas as classes. No cenário 60/40, o recall foi 0,9436 para High, 0,4507 para Low e 0,5373 para Medium. No cenário 85/15, foi 0,9315 para High, 0,6667 para Low e 0,6600 para Medium. Assim, o modelo é um ponto de partida razoável, mas ainda erra mais as classes Low e Medium. A adequação depende também do impacto que esses erros teriam no uso real.
 
-## Interpretação crítica esperada
+O teste com 40% dos dados tem mais exemplos para avaliar o modelo, mas deixa menos dados para treinamento. Com 15% de teste, o modelo treina com mais registros, mas as métricas dependem de uma amostra menor. Neste experimento, o segundo cenário teve resultados maiores; isso não prova que seja sempre melhor, pois os tamanhos dos testes são diferentes. Validação cruzada poderia ajudar a comparar os cenários com mais estabilidade.
 
-- **Teste maior (40%)**: fornece mais observações para estimar as métricas e tende a reduzir a variância amostral da avaliação; em contrapartida, deixa menos dados para ajustar o modelo, o que pode reduzir seu desempenho.
-- **Teste menor (15%)**: permite treinar com mais dados, potencialmente melhorando o ajuste; a avaliação é baseada em menos observações e tende a ser mais sensível à composição do conjunto de teste, especialmente em classes raras.
-- Como as partições usam o mesmo seed, a comparação é reproduzível, mas as amostras de teste não têm o mesmo tamanho. Pequenas diferenças não provam superioridade. Para estimativa mais confiável, complemente com validação cruzada estratificada repetida e mantenha um teste final intocado.
-- Considere a performance adequada apenas se os erros por classe forem aceitáveis para o contexto. Examine recall das classes críticas, precisão, confusões sistemáticas e estabilidade, e compare com a baseline majoritária.
+## Como executar
 
-## Instalação e execução
-
-Requer Python 3.10 ou superior (dependências compatíveis listadas em `requirements.txt`).
+Com Python instalado, abra um terminal na pasta do projeto e rode:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python src/analysis.py
+python src/analysis.py --no-show
 ```
 
-Para indicar outro local do CSV ou rodar sem abrir janelas de gráficos:
+O CSV precisa estar no caminho indicado acima. Para usar outro caminho, informe-o com `--data`:
 
 ```bash
-python src/analysis.py --data /caminho/renewable_energy_production_dataset.csv --no-show
+python src/analysis.py --data /caminho/para/arquivo.csv --no-show
 ```
 
-No Jupyter, abra `notebooks/challenge_sprint_4.ipynb` a partir da raiz do projeto e execute as células. Se necessário, instale `ipykernel`/`jupyter` no ambiente.
+Também é possível abrir `notebooks/challenge_sprint_4.ipynb` e executar as células a partir da raiz do projeto.
 
-## Artefatos produzidos
+## Arquivos gerados
 
-| Arquivo | Conteúdo |
-|---|---|
-| `outputs/correlation_heatmap.png` | Heatmap de correlações |
-| `outputs/correlation_matrix.csv` | Matriz numérica completa usada no heatmap |
-| `outputs/confusion_matrix_cenário_1.png` | Matriz de confusão — 40% teste |
-| `outputs/confusion_matrix_cenário_2.png` | Matriz de confusão — 15% teste |
-| `outputs/metrics_comparison.csv` | Comparação numérica de métricas e tamanhos |
-| `outputs/classification_reports.txt` | Relatório detalhado por classe para cada cenário |
+- `outputs/correlation_heatmap.png` e `outputs/correlation_matrix.csv`: correlações;
+- `outputs/confusion_matrix_cenário_1.png` e `outputs/confusion_matrix_cenário_2.png`: matrizes de confusão;
+- `outputs/metrics_comparison.csv`: métricas dos dois cenários;
+- `outputs/classification_reports.txt`: métricas detalhadas por classe.
 
-## Reprodutibilidade e limitações
-
-O seed é fixado em 42. O pipeline previne vazamento ao ajustar imputação, escala e categorias somente em cada conjunto de treino. Categorias inéditas no teste são toleradas pelo encoder. Quando uma partição é pequena demais para conter todas as classes, o código avisa e não estratifica; nesse caso, interprete as métricas por classe com cautela. A regressão logística linear pode não capturar fronteiras complexas; modelos não lineares e validação cruzada são extensões possíveis, sem substituir a análise solicitada.
+O código usa a semente 42 para permitir repetir a divisão dos dados. A Regressão Logística pode não representar bem fronteiras de decisão mais complexas; além disso, as métricas variam conforme os dados de teste. Por isso, os resultados devem ser interpretados junto com as matrizes de confusão e as métricas por classe, não apenas pela acurácia.
