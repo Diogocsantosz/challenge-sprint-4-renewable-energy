@@ -4,7 +4,7 @@
 
 ## 1. Abertura (20–30 s)
 
-“Olá! Neste vídeo apresento o Challenge Sprint 4. O objetivo é classificar `Energy_Class` usando o dataset Renewable Energy Production Dataset de 2010 a 2020 e comparar dois tamanhos de conjunto de teste com Regressão Logística.”
+“Olá! Nós somos Rafael Laprega Gontijo Magalhaes (RM 561975), Gustavo Torres de Oliveira (RM 572952), Lucas Furquim Lima (RM 568690) e Diogo Chiaradia Santos (RM 570246). Neste vídeo apresentamos o Challenge Sprint 4. O objetivo é classificar `Energy_Class` usando o dataset Renewable Energy Production Dataset de 2010 a 2020 e comparar dois tamanhos de conjunto de teste com Regressão Logística.”
 
 ## 2. Dados e preparação (45–60 s)
 

@@ -2,6 +2,13 @@
 
 Classificação supervisionada da variável `Energy_Class` usando **Regressão Logística** e o dataset *Renewable Energy Production Dataset (2010–2020)*, do Kaggle. O projeto calcula correlações, treina e compara dois cenários de holdout e exporta gráficos e métricas.
 
+## Integrantes
+
+- Rafael Laprega Gontijo Magalhaes — RM 561975
+- Gustavo Torres de Oliveira — RM 572952
+- Lucas Furquim Lima — RM 568690
+- Diogo Chiaradia Santos — RM 570246
+
 > **Dados:** o CSV usado está em `data/renewable_energy_production_dataset.csv` e foi obtido do [Kaggle](https://www.kaggle.com/datasets/itsrohithere/renewable-energy-production-dataset-2010-2020). A página do dataset informa licença “Unknown”; confira os termos de uso antes de redistribuí-lo publicamente. A atividade exige que a base esteja no repositório.
 
 ## Estrutura
@@ -9,7 +16,7 @@ Classificação supervisionada da variável `Energy_Class` usando **Regressão L
 ```text
 challenge-sprint-4/
 ├── data/
-│   └── renewable_energy_production_dataset.csv  # adicionar localmente
+│   └── renewable_energy_production_dataset.csv
 ├── notebooks/
 │   └── challenge_sprint_4.ipynb
 ├── outputs/                                      # gerado na execução
