@@ -1,0 +1,22 @@
+Cenário 1 (teste 40%)
+              precision    recall  f1-score   support
+
+        High     0.7603    0.9436    0.8421       195
+         Low     0.6667    0.4507    0.5378        71
+      Medium     0.6545    0.5373    0.5902       134
+
+    accuracy                         0.7200       400
+   macro avg     0.6938    0.6439    0.6567       400
+weighted avg     0.7083    0.7200    0.7037       400
+
+
+Cenário 2 (teste 15%)
+              precision    recall  f1-score   support
+
+        High     0.8095    0.9315    0.8662        73
+         Low     0.8571    0.6667    0.7500        27
+      Medium     0.7333    0.6600    0.6947        50
+
+    accuracy                         0.7933       150
+   macro avg     0.8000    0.7527    0.7703       150
+weighted avg     0.7927    0.7933    0.7882       150
