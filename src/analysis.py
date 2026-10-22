@@ -40,6 +40,11 @@ DEFAULT_DATA_PATH = ROOT_DIR / "data" / "renewable_energy_production_dataset.csv
 OUTPUT_DIR = ROOT_DIR / "outputs"
 TARGET = "Energy_Class"
 RANDOM_STATE = 42
+TEAM_LABEL = (
+    "Integrantes: Rafael Laprega Gontijo Magalhaes (RM 561975); "
+    "Gustavo Torres de Oliveira (RM 572952); Lucas Furquim Lima (RM 568690); "
+    "Diogo Chiaradia Santos (RM 570246)"
+)
 
 
 def _make_one_hot_encoder() -> OneHotEncoder:
@@ -151,7 +156,8 @@ def plot_correlation_matrix(correlation: pd.DataFrame, output_dir: Path, show: b
         ax=ax,
     )
     ax.set_title("Matriz de correlação — preditores codificados e Energy_Class")
-    plt.tight_layout()
+    plt.tight_layout(rect=(0, 0.035, 1, 1))
+    fig.text(0.5, 0.008, TEAM_LABEL, ha="center", va="bottom", fontsize=7)
     fig.savefig(output_dir / "correlation_heatmap.png", dpi=180, bbox_inches="tight")
     if show:
         plt.show()
@@ -300,7 +306,8 @@ def evaluate_scenario(
     display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
     display.plot(ax=ax, cmap="Blues", values_format="d", colorbar=False, xticks_rotation=35)
     ax.set_title(f"Matriz de confusão — {scenario_name} ({test_size:.0%} teste)")
-    plt.tight_layout()
+    plt.tight_layout(rect=(0, 0.035, 1, 1))
+    fig.text(0.5, 0.008, TEAM_LABEL, ha="center", va="bottom", fontsize=7)
     safe_name = scenario_name.lower().replace(" ", "_")
     fig.savefig(output_dir / f"confusion_matrix_{safe_name}.png", dpi=180, bbox_inches="tight")
     if show:
@@ -343,7 +350,7 @@ def run_analysis(data_path: Path = DEFAULT_DATA_PATH, show: bool = True) -> pd.D
     results = pd.DataFrame(outcomes)
     results.to_csv(OUTPUT_DIR / "metrics_comparison.csv", index=False, encoding="utf-8")
     (OUTPUT_DIR / "classification_reports.txt").write_text(
-        "\n\n".join(reports), encoding="utf-8"
+        TEAM_LABEL + "\n\n" + "\n\n".join(reports), encoding="utf-8"
     )
     print("\nComparação dos cenários:")
     print(results.to_string(index=False, float_format=lambda value: f"{value:.4f}"))
