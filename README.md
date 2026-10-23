@@ -62,7 +62,7 @@ O CSV precisa estar no caminho indicado acima. Para usar outro caminho, informe-
 python src/analysis.py --data /caminho/para/arquivo.csv --no-show
 ```
 
-Também é possível abrir `notebooks/challenge_sprint_4.ipynb` e executar as células a partir da raiz do projeto.
+O notebook `notebooks/challenge_sprint_4.ipynb` é independente da pasta `src/` e contém todas as etapas da análise. No Google Colab, faça upload apenas do `.ipynb`, clique em **Ambiente de execução → Executar tudo** e envie `data/renewable_energy_production_dataset.csv` quando a primeira célula solicitar. No VS Code/Jupyter local, execute-o a partir da raiz do projeto com o CSV no caminho indicado.
 
 ## Arquivos gerados
 
